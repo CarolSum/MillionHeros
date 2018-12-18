@@ -28,14 +28,20 @@
       <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
       <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
     </ul>
+    <a-button type="danger">Danger</a-button>
   </div>
 </template>
 
 <script>
+import { Button, message } from 'ant-design-vue'
+
 export default {
   name: 'HelloWorld',
   props: {
     msg: String
+  },
+  components: {
+    [Button.name]: Button,
   },
   methods: {
     onBtnClick () {
@@ -61,7 +67,7 @@ export default {
           // Execute adopt as a transaction by sending account
           return adoptionInstance.adopt(petId, {from: account});
         }).then(function(result) {
-          return App.markAdopted();
+          // return App.markAdopted();
         }).catch(function(err) {
           console.log(err.message);
         });
