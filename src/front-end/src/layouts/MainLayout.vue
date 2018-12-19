@@ -1,30 +1,33 @@
 <template>
   <div id="main-layout">
     <a-layout class="layout">
-      <a-layout-header>
-        <div class="logo">Millon Heros</div>
-        <a-menu
-          mode="horizontal"
-          :defaultSelectedKeys="['1']"
-          :style="{ height: '66px', lineHeight: '64px' }">
-          <a-menu-item key="1">
-						<router-link :to="{ name: 'home'}">Home</router-link>
-					</a-menu-item>
-          <a-menu-item key="2">
-						<router-link :to="{ name: 'space'}">Space</router-link>
-					</a-menu-item>
-          <a-menu-item key="3">
-						<router-link :to="{ name: 'sponsored'}">Add</router-link>
-					</a-menu-item>
-          <a-menu-item key="4" style="float: right">
-						<a href="http://www.github.com/carolsum" target="_blank">
-							<a-icon type="github" />About Me
-						</a>
-          </a-menu-item>
-        </a-menu>
-      </a-layout-header>
-      <a-layout-content style="padding: 0 50px; margin-top: 60px;">
-        <div :style="{ background: '#fff', padding: '24px', minHeight: '280px' }">
+			<a-affix :offsetTop="this.top">
+				<a-layout-header>
+					<div class="logo">Millon Heros</div>
+					<a-menu
+						mode="horizontal"
+						:defaultSelectedKeys="['1']"
+						:style="{ height: '66px', lineHeight: '64px' }">
+						<a-menu-item key="1">
+							<router-link :to="{ name: 'home'}">Home</router-link>
+						</a-menu-item>
+						<a-menu-item key="2">
+							<router-link :to="{ name: 'space'}">Space</router-link>
+						</a-menu-item>
+						<a-menu-item key="3">
+							<router-link :to="{ name: 'sponsored'}">Add</router-link>
+						</a-menu-item>
+						<a-menu-item key="4" style="float: right">
+							<a href="http://www.github.com/carolsum" target="_blank">
+								<a-icon type="github" />About Me
+							</a>
+						</a-menu-item>
+					</a-menu>
+				</a-layout-header>
+			</a-affix>
+      
+      <a-layout-content style="padding: 0 50px; margin-top: 30px;">
+        <div :style="{ minHeight: '280px' }">
 					<router-view></router-view>
 				</div>
       </a-layout-content>
@@ -39,7 +42,8 @@
 import { 
   Layout,
   Menu,
-  Icon
+	Icon,
+	Affix
 } from 'ant-design-vue';
 import FooterLayout from './FooterLayout';
 
@@ -56,6 +60,7 @@ export default {
     ALayoutFooter: Layout.Footer,
     AMenuItem: Menu.Item,
 		AIcon: Icon,
+		AAffix: Affix,
 		// custom components
 		FooterLayout
   },
