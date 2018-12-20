@@ -1,7 +1,7 @@
 <template>
   <div id="main-layout">
     <a-layout class="layout">
-			<a-affix :offsetTop="this.top">
+			<a-affix>
 				<a-layout-header>
 					<div class="logo">Millon Heros</div>
 					<a-menu

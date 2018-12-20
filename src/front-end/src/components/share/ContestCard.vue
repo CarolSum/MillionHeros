@@ -53,12 +53,12 @@ const picSrc = [
 export default {
   name: 'contest-card',
   props: {
-		contest: {},
-		picIndex: 0
+		contest: {}
 	},
 	data: function () {
 		return {
-			isHover: false
+			isHover: false,
+			picIndex: 0
 		}
 	},
 	computed: {
