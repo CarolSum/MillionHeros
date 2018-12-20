@@ -3,7 +3,7 @@
     <a-divider>发起新的知识竞赛吧🆚</a-divider>
     <div class="button-wrapper">
       <a-button class="editable-add-btn" @click="openModal">增加题目</a-button>
-      <a-button type="primary" @click="handleSubmitSponsor" :loading="submitLoading" style="margin-left: 20px;">马上发布</a-button>
+      <a-button type="primary" @click="openContestInfoModal" style="margin-left: 20px;">马上发布</a-button>
     </div>
     <a-table  :dataSource="newContestData" :columns="columns"
       rowKey="id" style="clear: both;">
@@ -22,7 +22,6 @@
       @ok="handleAddChoice"
       :confirmLoading="confirmLoading"
       @cancel="handleCancelAddChoice">
-      
       <a-form layout='vertical' :form="form">
         <a-form-item label='请输入题目：'>
           <a-input
@@ -72,8 +71,8 @@
           </a-radio-group>
         </a-form-item>
       </a-form>
-
     </a-modal>
+    <contest-info-form ref="contestForm" @submit="handleSubmitSponsor"></contest-info-form>
   </div>
 </template>
 
@@ -85,10 +84,13 @@ import {
   Popconfirm,
   Modal,
   Input,
+  InputNumber,
+  DatePicker,
   Form,
   Radio
 } from 'ant-design-vue'
 import { setTimeout } from 'timers';
+import ContestInfoForm from './share/ContestInfoForm';
 
 export default {
   name: 'sponsored',
@@ -104,8 +106,11 @@ export default {
     AForm: Form,
     AFormItem: Form.Item,
     AInput: Input,
+    AInputNumber: InputNumber,
     ARadio: Radio,
-    ARadioGroup: Radio.Group
+    ARadioGroup: Radio.Group,
+    ADatePicker: DatePicker,
+    ContestInfoForm
   },
   data () {
     return {
@@ -157,7 +162,7 @@ export default {
       confirmLoading: false,
       form: this.$form.createForm(this),
       newContestContent: [], // 待发布的contest的内容
-      newContestAnswer: {}  // 待发布的contest的答案
+      newContestAnswer: {},  // 待发布的contest的答案
     }
   },
   methods: {
@@ -166,7 +171,7 @@ export default {
       this.addChoiceModalVisible = true;
     },
     // 提交发布
-    handleSubmitSponsor () {
+    handleSubmitSponsor (payload) {
       this.submitLoading = true;
       this.newContestContent = this.newContestData.map(({id, title, choice}) => {
         return { id, title, choice }
@@ -174,8 +179,14 @@ export default {
       this.newContestData.forEach(item => {
         this.newContestAnswer[item.id] = item.answer;
       })
+      // 新contest的答案
       console.log(this.newContestAnswer);
+      // 新contest的内容
       console.log(this.newContestContent);
+      // payload 中为contest的基本信息    
+      payload.ddl = payload.ddl.valueOf();
+      console.log(payload);
+
       setTimeout(() => {
         this.submitLoading = false;
       }, 1000);
@@ -218,6 +229,9 @@ export default {
     resetForm () {
       this.form.resetFields()
     },
+    openContestInfoModal () {
+      this.$refs.contestForm.openContestInfoModal();
+    }
   }
 }
 </script>
