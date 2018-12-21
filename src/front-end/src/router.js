@@ -3,6 +3,7 @@ import  MainLayout  from './layouts/MainLayout';
 import Home from './components/Home';
 import Space from './components/Space';
 import Sponsored from './components/Sponsored';
+import Contest from './components/Contest';
 
 const routes = [
 	{ path: '/', component: MainLayout,
@@ -21,6 +22,11 @@ const routes = [
 				path: 'sponsor',
 				name: 'sponsored',
 				component: Sponsored
+			},
+			{
+				path: 'contest/:contestId',
+				name: 'contest',
+				component: Contest
 			}
 		]
 	}

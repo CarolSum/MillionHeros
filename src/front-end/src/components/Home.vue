@@ -38,7 +38,7 @@ export default {
 	},
   methods: {
     onContestCardClick(id) {
-			console.log('Click: ' + id);
+			this.$router.push({ name:'contest', params: { contestId: 1 }});
 		}
   }
 }

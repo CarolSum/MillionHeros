@@ -161,8 +161,15 @@ export default {
       addChoiceModalVisible: false,
       confirmLoading: false,
       form: this.$form.createForm(this),
-      newContestContent: [], // 待发布的contest的内容
       newContestAnswer: {},  // 待发布的contest的答案
+    }
+  },
+  computed: {
+    // 待发布的contest的内容
+    newContestContent: function () {
+      return this.newContestData.map(({id, title, choice}) => {
+        return { id, title, choice }
+      });
     }
   },
   methods: {
@@ -173,16 +180,13 @@ export default {
     // 提交发布
     handleSubmitSponsor (payload) {
       this.submitLoading = true;
-      this.newContestContent = this.newContestData.map(({id, title, choice}) => {
-        return { id, title, choice }
-      });
       this.newContestData.forEach(item => {
         this.newContestAnswer[item.id] = item.answer;
       })
       // 新contest的答案
-      console.log(this.newContestAnswer);
+      console.log(JSON.stringify(this.newContestAnswer));
       // 新contest的内容
-      console.log(this.newContestContent);
+      console.log(JSON.stringify(this.newContestContent));
       // payload 中为contest的基本信息    
       payload.ddl = payload.ddl.valueOf();
       console.log(payload);
@@ -191,7 +195,7 @@ export default {
         this.submitLoading = false;
       }, 1000);
       // 清空数据
-      this.newContestContent.splice(0);
+      // this.newContestContent.splice(0);
       this.newContestAnswer = {};
       console.log('发布！');
     },
