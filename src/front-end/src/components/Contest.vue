@@ -9,7 +9,18 @@
 		</div>
 		<a-divider></a-divider>
 		<!-- <a-divider orientation="left">统计信息</a-divider> -->
-
+		<div class="base-info">
+			<div class="major-info">
+				<p>{{contest.desc}}</p>
+				<div class="secondary-text">发起人：{{contest.sponsor}}</div>
+			</div>
+			<div class="text-info">
+				<icon-text iconType="plus-circle" hint="参与费用" :text="contest.cost"></icon-text>
+				<icon-text iconType="money-collect" hint="奖励金" :text="contest.bonus"></icon-text>
+				<icon-text iconType="clock-circle" hint="截止时间" :text="contest.ddl"></icon-text>
+				<icon-text iconType="thunderbolt" hint="是否结束" :text="contest.isFinished"></icon-text>
+			</div>
+		</div>
 		<a-divider orientation="left">解答/提交</a-divider>
 		
   </div>
@@ -20,6 +31,7 @@ import {
 	Divider,
 	Button
 } from 'ant-design-vue';
+import IconText from './share/IconText';
 
 export default {
   name: 'contest',
@@ -28,7 +40,8 @@ export default {
   },
   components: {
 		ADivider: Divider,
-		AButton: Button
+		AButton: Button,
+		IconText
 	},
 	data: function () {
 		return {
@@ -110,6 +123,17 @@ export default {
 		margin-bottom: 8px;
 	}
 	
+	.base-info {
+		display: flex;
+		flex-direction: row;
+		.major-info {
+			flex-grow: 1;
+			text-align: left;
+		}
+		.secondary-text {
+			color: #787878;
+		}
+	}
 }
 </style>
 <style lang="less">
