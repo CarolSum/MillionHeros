@@ -22,7 +22,9 @@
 			</div>
 		</div>
 		<a-divider orientation="left">解答/提交</a-divider>
-		
+		<template v-for="question in resolveContent" >
+			<problem-card :question="question" :key="question.id" :answer="resolveAnswer[question.id]" class="question-item"></problem-card>
+		</template>
   </div>
 </template>
 
@@ -32,6 +34,7 @@ import {
 	Button
 } from 'ant-design-vue';
 import IconText from './share/IconText';
+import ProblemCard from './share/ProblemCard';
 
 export default {
   name: 'contest',
@@ -41,7 +44,8 @@ export default {
   components: {
 		ADivider: Divider,
 		AButton: Button,
-		IconText
+		IconText,
+		ProblemCard
 	},
 	data: function () {
 		return {
@@ -133,6 +137,9 @@ export default {
 		.secondary-text {
 			color: #787878;
 		}
+	}
+	.question-item {
+		margin: 24px 0;
 	}
 }
 </style>
