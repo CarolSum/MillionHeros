@@ -5,7 +5,7 @@
 			<div class="right-info">{{question.title}}</div>
 		</div>
 		<div class="question-wrapper">
-			<div class="left-info">本题答案</div>
+			<div class="left-info">{{this.leftInfo}}</div>
 			<div class="right-info">
 				<a-radio-group v-model="q_answer" @change="onChange">
 					<a-radio v-for="(q, index) in question.choice" :style="radioStyle" :value="index" :key="index">{{q}}</a-radio>
@@ -20,6 +20,13 @@ import {
 	Card,
 	Radio
 } from 'ant-design-vue';
+
+const Type = {
+	ANSWER: 0,
+	SUBMIT: 1,
+	NO_DISPLAY: 2,
+}
+
 export default {
 	name: 'problem-card',
 	components: {
@@ -29,7 +36,8 @@ export default {
   },
   props: {
 		question: {},
-		answer: 0
+		answer: 0,
+		type: ''
 	},
 	data: function () {
 		return {
@@ -42,11 +50,26 @@ export default {
 		}
 	},
 	computed: {
-		
+		leftInfo: function () {
+			if(this.type === Type.ANSWER) {
+				return '本题答案';
+			} else if (this.type === Type.SUBMIT) {
+				return '本题提交';
+			} else if (this.type === Type.NO_DISPLAY) {
+				return '';
+			}
+		}
 	},
   methods: {
 		onChange (e) {
-			this.q_answer = this.answer
+			if(this.type === Type.ANSWER || this.type === Type.SUBMIT) {
+				this.q_answer = this.answer
+			} else if(this.type === Type.NO_DISPLAY) {
+				this.$emit('setQuestionAnswer', {
+					id: this.question.id,
+					choice: e.target.value
+				})
+			}
 		}
 	},
 	mounted () {

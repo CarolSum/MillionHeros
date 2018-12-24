@@ -4,6 +4,7 @@ import Home from './components/Home';
 import Space from './components/Space';
 import Sponsored from './components/Sponsored';
 import Contest from './components/Contest';
+import ContestSubmit from './components/ContestSubmit';
 
 const routes = [
 	{ path: '/', component: MainLayout,
@@ -27,6 +28,11 @@ const routes = [
 				path: 'contest/:contestId',
 				name: 'contest',
 				component: Contest
+			},
+			{
+				path: 'contest/:contestId/submit',
+				name: 'submit',
+				component: ContestSubmit
 			}
 		]
 	}

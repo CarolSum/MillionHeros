@@ -3,8 +3,11 @@
 		<div class="contest-header">
 			<h1>{{contest.title}}</h1>
 			<div class="button-group">
-				<a-button class="positive-btn">参与</a-button>
-				<a-button type="primary" @click="jumpToAnswer">答题</a-button>
+				<a-popconfirm v-if="!isParticipator" placement="left" title="参与比赛需要支付一定的金额，确定参与？" okText="Yes" cancelText="No" @confirm="participate">
+					<a-button style="color: white; background: chocolate;" class="positive-btn">参与</a-button>
+				</a-popconfirm>
+				<a-button v-else class="positive-btn" disabled>已参与</a-button>
+				<a-button v-if="isParticipator" type="primary" @click="jumpToAnswer" :disabled="!isParticipator || isSubmitted">答题</a-button>
 			</div>
 		</div>
 		<a-divider></a-divider>
@@ -21,17 +24,40 @@
 				<icon-text iconType="thunderbolt" hint="是否结束" :text="contest.isFinished"></icon-text>
 			</div>
 		</div>
-		<a-divider orientation="left">解答/提交</a-divider>
-		<template v-for="question in resolveContent" >
-			<problem-card :question="question" :key="question.id" :answer="resolveAnswer[question.id]" class="question-item"></problem-card>
-		</template>
+		<a-divider orientation="left">解答</a-divider>
+		<div v-if="contest.isFinished">
+			<template v-for="question in resolveContent" >
+				<problem-card :key="question.id" class="question-item"
+					:question="question"
+					:answer="resolveAnswer[question.id]"
+					:type="0">
+				</problem-card>
+			</template>
+		</div>
+		<div v-else>
+			<p>比赛结束后才能看到答案哦～</p>
+		</div>
+		<a-divider orientation="left">提交记录</a-divider>
+		<div v-if="isSubmitted">
+			<template v-for="question in resolveContent" >
+				<problem-card :key="question.id" class="question-item"
+					:question="question"
+					:answer="resolveAnswer[question.id]"
+					:type="1">
+				</problem-card>
+			</template>
+		</div>
+		<div v-else>
+			<p>当前还没有提交记录～</p>
+		</div>
   </div>
 </template>
 
 <script>
 import { 
 	Divider,
-	Button
+	Button,
+	Popconfirm
 } from 'ant-design-vue';
 import IconText from './share/IconText';
 import ProblemCard from './share/ProblemCard';
@@ -44,6 +70,7 @@ export default {
   components: {
 		ADivider: Divider,
 		AButton: Button,
+		APopconfirm: Popconfirm,
 		IconText,
 		ProblemCard
 	},
@@ -65,7 +92,8 @@ export default {
 				answer: '{"0":2,"1":0,"2":3}',
 				// 赢家
 				winner: '0x12312312312312312312'
-			}
+			},
+			isSubmitted: false
 		}
 	},
 	computed: {
@@ -74,6 +102,9 @@ export default {
 		},
 		resolveAnswer: function () {
 			return JSON.parse(this.contest.answer);
+		},
+		isParticipator () {
+			return true;
 		}
 	},
   methods: {
@@ -81,10 +112,13 @@ export default {
 			getContestInfo();
 		},
 		jumpToAnswer () {
-			console.log(this.resolveContent);
+			this.$router.push({name: 'submit', params: { contestId: this.$route.params.contestId }});
 		},
 		getContestInfo () {
 			console.log('dispatch get info')
+		},
+		participate () {
+			// 参与该场比赛
 		}
   }
 }
@@ -121,8 +155,6 @@ export default {
 	}
 
 	.positive-btn {
-		color: white;
-		background: chocolate;
 		display: block;
 		margin-bottom: 8px;
 	}
