@@ -1,7 +1,7 @@
-var Adoption = artifacts.require("Adoption");
+// var Contest = artifacts.require("Contest");
 var Playground = artifacts.require("Playground");
 
 module.exports = function(deployer) {
-  // deployer.deploy(Adoption);
+  // deployer.deploy(Contest);
   deployer.deploy(Playground);
 };

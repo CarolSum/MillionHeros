@@ -42,6 +42,11 @@ export default {
 		}
 	},
 	mounted () {
+
+		// 获得用户地址
+		// var account = this.$web3.eth.accounts[0];
+		// this.$store.commit('SET_ACCOUNT', account);
+		
 		var adoptionInstance;
 		let contracts = this.$contracts;
 
