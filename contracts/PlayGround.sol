@@ -1,14 +1,20 @@
-contract PlayGround {
+pragma solidity ^0.4.0;
+
+import "./Contest.sol";
+
+contract Playground {
     Contest contest;
     address[] public contests;
     mapping(address => address[]) partcipatedContests;
     mapping(address => address[]) sponsoredContests;
     
     
-    function addContest(string mTitle, string mDesc, uint mDDL, uint mCost, uint mBonus, string mContent, string mAnswer) public payable {
+    function addContest(string mTitle, string mDesc, uint mDDL, uint mCost, uint mBonus, string mContent, string mAnswer)
+        public payable returns (address) {
         address a = (new Contest).value(msg.value)(mTitle, mDesc, mDDL, mCost, mBonus, mContent, mAnswer);
         contests.push(a);
         sponsoredContests[msg.sender].push(a);
+        return a;
     }
     
     // 获取所有比赛合约地址, 通过前端筛选发起和参与的比赛
@@ -21,7 +27,7 @@ contract PlayGround {
     }
     
     function getSponsorredContestById(uint id) public view returns (address) {
-        require(id < partcipatedContests[msg.sender].length && 0 <= id);
+        require(id < partcipatedContests[msg.sender].length && 0 <= id, "索引越界");
         return sponsoredContests[msg.sender][id];
     }
     
