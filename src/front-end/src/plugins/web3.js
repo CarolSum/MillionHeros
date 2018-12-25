@@ -51,7 +51,6 @@ export default {
 		// 初始化合约对象
 		contracts.Playground.setProvider(web3Provider);
 		contracts.Contest.setProvider(web3Provider);
-		console.log(contracts);
 		Vue.prototype.$contracts = contracts;
 	}
 }
