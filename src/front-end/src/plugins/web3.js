@@ -29,12 +29,14 @@ export default {
 		let web3 = new Web3(web3Provider);
 		Vue.prototype.$web3 = web3;
 
-		$.getJSON('../contracts/Adoption.json', function(data) {
+		$.getJSON('Playground.json', function(data) {
+			// eslint-disable-next-line no-console
+			console.log(data);
       // Get the necessary contract artifact file and instantiate it with truffle-contract
-      var AdoptionArtifact = data;
-      contracts.Adoption = TruffleContract(AdoptionArtifact);
+      var PlaygroundArtifact = data;
+      contracts.Playground = TruffleContract(PlaygroundArtifact);
       // Set the provider for our contract
-			contracts.Adoption.setProvider(web3Provider);
+			contracts.Playground.setProvider(web3Provider);
 			Vue.prototype.$contracts = contracts;
     });
 	}
