@@ -1,12 +1,18 @@
 import Web3 from "web3"
-import $ from 'jquery'
+// import $ from 'jquery'
+import PlaygroundArtifact from '../contracts/Playground'
+import ContestArtiface from '../contracts/Contest';
 const TruffleContract = require("truffle-contract");
+
+const contracts = {
+	Playground: TruffleContract(PlaygroundArtifact),
+	Contest: TruffleContract(ContestArtiface)
+};
 
 export default {
   install: async function (Vue) {
     // Modern dapp browsers...
 		var web3Provider = null;
-		var contracts = {};
     if (window.ethereum) {
 			web3Provider = window.ethereum;
 			try {
@@ -29,15 +35,23 @@ export default {
 		let web3 = new Web3(web3Provider);
 		Vue.prototype.$web3 = web3;
 
-		$.getJSON('Playground.json', function(data) {
-			// eslint-disable-next-line no-console
-			console.log(data);
-      // Get the necessary contract artifact file and instantiate it with truffle-contract
-      var PlaygroundArtifact = data;
-      contracts.Playground = TruffleContract(PlaygroundArtifact);
-      // Set the provider for our contract
-			contracts.Playground.setProvider(web3Provider);
-			Vue.prototype.$contracts = contracts;
-    });
+		// TODO: 同步读取JSON文件
+		// $.ajaxSettings.async = false;
+		// $.getJSON('Playground.json', function(data) {
+		// 	// eslint-disable-next-line no-console
+		// 	console.log(data);
+		// 	// Get the necessary contract artifact file and instantiate it with truffle-contract
+		// 	var PlaygroundArtifact = data;
+		// 	contracts.Playground = TruffleContract(PlaygroundArtifact);
+		// 	// Set the provider for our contract
+		// 	contracts.Playground.setProvider(web3Provider);
+		// 	Vue.prototype.$contracts = contracts;
+		// });
+
+		// 初始化合约对象
+		contracts.Playground.setProvider(web3Provider);
+		contracts.Contest.setProvider(web3Provider);
+		console.log(contracts);
+		Vue.prototype.$contracts = contracts;
 	}
 }

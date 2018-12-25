@@ -40,7 +40,21 @@ export default {
     onContestCardClick(id) {
 			this.$router.push({ name:'contest', params: { contestId: 1 }});
 		}
-  }
+	},
+	mounted () {
+		var adoptionInstance;
+		let contracts = this.$contracts;
+
+		contracts.Playground.deployed().then(function(instance) {
+			console.log(instance);
+			adoptionInstance = instance;
+			return adoptionInstance.getContests.call();
+		}).then(function(contests) {
+			console.log(contests);
+		}).catch(function(err) {
+			console.log(err);
+		});
+	}
 }
 </script>
 

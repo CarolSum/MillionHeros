@@ -108,9 +108,6 @@ export default {
 		}
 	},
   methods: {
-		mounted () {
-			getContestInfo();
-		},
 		jumpToAnswer () {
 			this.$router.push({name: 'submit', params: { contestId: this.$route.params.contestId }});
 		},
@@ -120,7 +117,17 @@ export default {
 		participate () {
 			// 参与该场比赛
 		}
-  }
+	},
+	mounted () {
+		this.$contracts.Contest.at("0xb2dd0baa6ec9f494d8bce14bf2030dc5d86fee98").then(function(instance){
+			console.log(instance);
+			return instance.getContestBaseInfo.call();
+		}).then(function(balance){
+				console.log(balance);
+		}).catch(function(err){
+				console.log(err);
+		});
+	}
 }
 </script>
 
