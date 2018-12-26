@@ -2,16 +2,19 @@
   <div id="home">
 		<a-divider orientation="left">当前活跃的比赛🔥</a-divider>
 		<div class="item-group">
-			<contest-card :contest="contest" @clickEvent="onContestCardClick"></contest-card>
-			<contest-card :contest="contest" @clickEvent="onContestCardClick"></contest-card>
-			<contest-card :contest="contest" @clickEvent="onContestCardClick"></contest-card>
+			<template v-for="(contest,index) in contests">
+				<contest-card :key="contestsAddressList[index]" :contest="contest" @clickEvent="onContestCardClick(contestsAddressList[index])"></contest-card>	
+			</template>
 		</div>
   </div>
 </template>
 
 <script>
 import { Divider } from 'ant-design-vue';
+import { GET_CONTEST_ADDRESS } from '../store/actions';
 import ContestCard from './share/ContestCard';
+import { store } from '../store/index';
+import { baseInfoWrapper } from '../utils/ObjectWrapper';
 
 export default {
   name: 'home',
@@ -33,32 +36,43 @@ export default {
 				bonus: 1000,
 				ddl: '2018-12-20/20:30',
 				sponsor: '0x12321312313'
-			}
+			},
+			contests: []
 		}
 	},
   methods: {
     onContestCardClick(id) {
-			this.$router.push({ name:'contest', params: { contestId: 1 }});
+			this.$router.push({ name:'contest', params: { contestId: id }});
 		}
 	},
+	computed: {
+		contestsAddressList: function () {
+			return store.state.contestAddress;
+		}
+	},
+	watch: {
+    contestsAddressList: function (newList, oldList) {
+			let contests = this.contests;
+			for (let index = 0; index < newList.length; index++) {
+				this.$contracts.Contest.at(newList[index]).then(function(instance){
+					return instance.getContestBaseInfo.call();
+				}).then(function(info){
+					let res = baseInfoWrapper(info);
+					res.ddl = new Date(res.ddl * 1000);
+					console.log(res);
+					contests.push(res);
+				}).catch(function(err){
+					console.log(err);
+				});
+			}
+		}
+  },
 	mounted () {
 
 		// 获得用户地址
 		// var account = this.$web3.eth.accounts[0];
 		// this.$store.commit('SET_ACCOUNT', account);
-		
-		var adoptionInstance;
-		let contracts = this.$contracts;
-
-		contracts.Playground.deployed().then(function(instance) {
-			console.log(instance);
-			adoptionInstance = instance;
-			return adoptionInstance.getContests.call();
-		}).then(function(contests) {
-			console.log(contests);
-		}).catch(function(err) {
-			console.log(err);
-		});
+		this.$store.dispatch(GET_CONTEST_ADDRESS);
 	}
 }
 </script>

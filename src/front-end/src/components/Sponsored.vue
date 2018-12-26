@@ -199,7 +199,6 @@ export default {
       this.newContestAnswer = {};
       console.log('发布！');
 
-      var adoptionInstance;
       let contracts = this.$contracts;
 
       this.$web3.eth.getAccounts(function(error, accounts) {
@@ -210,9 +209,7 @@ export default {
 
         contracts.Playground.deployed().then(function(instance) {
           console.log(instance);
-          adoptionInstance = instance;
-          
-          return adoptionInstance.addContest.sendTransaction("Title1", "This is a description", 30, 20, 1000, "[{title:'这是一道题目', choice: ['aaa', 'bbb', 'ccc']}]","{'0':'1'}", {from: account, value:2000});
+          return instance.addContest.sendTransaction("Title1", "This is a description", 30, 20, 1000, "[{title:'这是一道题目', choice: ['aaa', 'bbb', 'ccc']}]","{'0':'1'}", {from: account, value:2000});
         }).then(function(txhash) {
           console.log(txhash);
         }).catch(function(err) {

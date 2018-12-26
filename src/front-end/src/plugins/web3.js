@@ -1,13 +1,6 @@
 import Web3 from "web3"
 // import $ from 'jquery'
-import PlaygroundArtifact from '../contracts/Playground'
-import ContestArtiface from '../contracts/Contest';
-const TruffleContract = require("truffle-contract");
-
-const contracts = {
-	Playground: TruffleContract(PlaygroundArtifact),
-	Contest: TruffleContract(ContestArtiface)
-};
+import { contracts } from '../utils/contractsImportor';
 
 export default {
   install: async function (Vue) {

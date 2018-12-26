@@ -2,6 +2,8 @@
 
 使用truffle开发智能合约，～将truffle compile得到的json文件放到contracts目录下，后面即可以用来生成合约实例。～
 
+如果更改了合约代码，需要 ` truffle migrate --reset`，然后重新操作
+
 ## Project setup
 ```
 npm install

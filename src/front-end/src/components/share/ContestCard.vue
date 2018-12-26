@@ -14,8 +14,8 @@
 			<a-icon type="ellipsis" />
 		</template> -->
 		<div class="title">{{contest.title}}</div>
-		<span class="status">截止时间: {{contest.ddl}}</span>
-		<div class="cb">cost: {{contest.cost}} wei <span style="color: rgb(155, 148, 148)">|</span> bouns: {{contest.bouns}} wei</div>
+		<span class="status">截止时间: {{contest.ddl.toLocaleString()}}</span>
+		<div class="cb">cost: {{contest.cost}} wei <span style="color: rgb(155, 148, 148)">|</span> bonus: {{contest.bonus}} wei</div>
 		<a-divider />
 		<div class="description">{{contest.desc}}</div>
 	</a-card>

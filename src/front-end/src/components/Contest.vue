@@ -119,7 +119,7 @@ export default {
 		}
 	},
 	mounted () {
-		this.$contracts.Contest.at("0x7317fa42e85a36f8411a459b34e70c95806b8d6b").then(function(instance){
+		this.$contracts.Contest.at("0xc28ee12c778db4067c3c91dc6bd69607514c4fcc").then(function(instance){
 			console.log(instance);
 			return instance.getContestBaseInfo.call();
 		}).then(function(balance){
