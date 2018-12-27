@@ -9,7 +9,7 @@
 			</div>
 		</div>
 		<a-divider></a-divider>
-		<template v-for="question in resolveContent" >
+		<template v-for="question in content" >
 			<problem-card :key="question.id" class="question-item"
 				:question="question"
 				:type="2"
@@ -23,10 +23,11 @@
 import { 
 	Divider,
 	Button,
-	Popconfirm
+	Popconfirm,
+	notification,
+	Icon
 } from 'ant-design-vue';
 import ProblemCard from './share/ProblemCard';
-
 
 export default {
   name: 'contest-submit',
@@ -37,41 +38,78 @@ export default {
 		ADivider: Divider,
 		AButton: Button,
 		APopconfirm: Popconfirm,
+		AIcon: Icon,
 		ProblemCard
 	},
 	data: function () {
 		return {
-			contest: {
-				contestid: 111,
-				desc: '这是描述信息这是描述信息这是描述信息这是描述信息这是描述信息这是描述信息',
-				isFinished: false,
-				title: '孔Bob举办的第一场pk赛',
-				cost: 10,
-				bonus: 1000,
-				ddl: '2018-12-20/20:30',
-				sponsor: '0x12321312313',
-				// 题目内容
-				content: '[{"id":0,"title":"大气中的水汽主要来源于","choice":["太阳","植物蒸腾","地球表面水体蒸发","大气本身"]},{"id":1,"title":"世界上各月降水量都很多的地区在：","choice":["南北纬300—400大陆东岸","南北回归线附近","南北纬400—600大陆东岸","赤道附近"]},{"id":2,"title":"我国庐山成为避暑胜地的主要因素是","choice":["纬度因素","海陆因素","洋流因素","地形因素"]}]',
-			},
+			content: [],
 			userAnswer: {}
 		}
 	},
 	computed: {
-		resolveContent: function () {
-			return JSON.parse(this.contest.content);
+		contest: function () {
+			return this.$store.state.contestBaseInfo;
 		},
 	},
   methods: {
-    onContestCardClick (id) {
-			this.$router.push({ name:'contest', params: { contestId: 1 }});
-		},
 		setQuestionAnswer (ans) {
 			this.userAnswer[ans.id] = ans.choice;
 		},
 		submitContest () {
-			console.log(this.userAnswer);
+			let answer = JSON.stringify(this.userAnswer).replace(/\"/g,"'");
+			try {
+				let that = this;
+				this.$web3.eth.getAccounts(async (error, accounts) => {
+					if (error) {
+						console.log(error);
+					}
+					let account = accounts[0];
+					let instance = await that.$contracts.Contest.at(that.$route.params.contestId);
+					instance.submit.sendTransaction(answer,{from: account}).then(() => {
+						notification.open({
+							message: '提交成功',
+							description: '比赛详情页可以看到自己的提交情况哦',
+							icon: <a-icon type="check-circle" style="color: #108ee9" />,
+						});
+						setTimeout(()=> {
+							that.$router.push({ name:'contest', params: { contestId: that.$route.params.contestId }});
+						}, 3000);
+					}).catch((error) => {
+						notification.open({
+							message: '发生未知错误～',
+							description: '好像哪里出错了呢～Hero君也不知道咋整>.<',
+							icon: <a-icon type="frown" style="color: #f44336" />,
+						});
+					})
+				});
+			} catch (error) {
+				notification.open({
+					message: '发生未知错误～',
+					description: '好像哪里出错了呢～Hero君也不知道咋整>.<',
+					icon: <a-icon type="frown" style="color: #f44336" />,
+				});
+			}
 		}
-  }
+	},
+	mounted () {
+		try {
+			let that = this;
+			this.$web3.eth.getAccounts(async (error, accounts) => {
+				if (error) {
+					console.log(error);
+				}
+				let account = accounts[0];
+				console.log(account);
+				let instance = await that.$contracts.Contest.at(that.$route.params.contestId);
+				let info = await instance.getContestContent.call({from: account}); 
+				console.log(JSON.parse(info.replace(/\'/g,"\"")));
+				that.content = JSON.parse(info.replace(/\'/g,"\""));
+			});
+		} catch (error) {
+			console.log(err);
+		}
+	}
 }
 </script>
 

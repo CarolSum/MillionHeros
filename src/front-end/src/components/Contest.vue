@@ -63,7 +63,8 @@ import {
 import IconText from './share/IconText';
 import ProblemCard from './share/ProblemCard';
 import { baseInfoWrapper } from '../utils/ObjectWrapper';
-import { notification } from 'ant-design-vue'
+import { notification } from 'ant-design-vue';
+import { SET_BASEINFO } from '../store/mutations';
 
 export default {
   name: 'contest',
@@ -154,6 +155,8 @@ export default {
 			console.log(res);
 			res.ddl = new Date(res.ddl);
 			this.baseContestInfo = res;
+			this.$store.commit(SET_BASEINFO, res);
+
 			if(res.isFinished) {
 				// 获取题目详细信息
 			}

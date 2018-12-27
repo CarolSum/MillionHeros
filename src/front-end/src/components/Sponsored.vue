@@ -84,6 +84,7 @@ import {
   Popconfirm,
   Modal,
   Input,
+  Icon,
   InputNumber,
   DatePicker,
   Form,
@@ -92,6 +93,7 @@ import {
 import { setTimeout } from 'timers';
 import ContestInfoForm from './share/ContestInfoForm';
 const moment = require('moment');
+import { notification } from 'ant-design-vue';
 
 export default {
   name: 'sponsored',
@@ -107,6 +109,7 @@ export default {
     AForm: Form,
     AFormItem: Form.Item,
     AInput: Input,
+    AIcon: Icon,
     AInputNumber: InputNumber,
     ARadio: Radio,
     ARadioGroup: Radio.Group,
@@ -205,10 +208,20 @@ export default {
           console.log(txhash);
           that.submitLoading = false;
           that.$refs.contestForm.handleCancelSubmit();
+          notification.open({
+						message: '发起成功',
+						description: '到主页或者个人空间查看已发起的比赛吧～',
+						icon: <a-icon type="like" style="color: #108ee9" />,
+					});
         }).catch(function(err) {
           console.log(err);
           that.submitLoading = false;
           that.$refs.contestForm.handleCancelSubmit();
+          notification.open({
+						message: '发起失败',
+						description: '已拒绝交易或者发生未知错误～',
+						icon: <a-icon type="close-circle" style="color: #f44336" />,
+					});
         });
       });
     },
