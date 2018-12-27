@@ -12,6 +12,8 @@ contract Playground {
     function addContest(string mTitle, string mDesc, uint mDDL, uint mCost, uint mBonus, string mContent, string mAnswer)
         public payable returns (address) {
         address a = (new Contest).value(msg.value)(mTitle, mDesc, mDDL, mCost, mBonus, mContent, mAnswer);
+        contest = Contest(a);
+        contest.setSponsorAddr(msg.sender);
         contests.push(a);
         sponsoredContests[msg.sender].push(a);
         return a;

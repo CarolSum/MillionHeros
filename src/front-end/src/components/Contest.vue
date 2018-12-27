@@ -88,7 +88,7 @@ export default {
 			content: [],
 			isSubmitted: false,
 			isFinished: false,
-			isParticipator: true
+			isParticipator: false
 		}
 	},
   methods: {

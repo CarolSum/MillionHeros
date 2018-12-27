@@ -48,6 +48,11 @@ contract Contest {
         winner = msg.sender;
     }
     
+    // 设置sponsor地址
+    function setSponsorAddr(address _sponsor) public {
+        sponsor = _sponsor;
+    }
+
     // 用户参与该竞赛
     function partcipate() public payable timedTransitions OnlyAtStage(Stages.ContestRunning){
         require(msg.value >= cost);     // 用户应该支付大于要求的入场费

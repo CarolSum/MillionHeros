@@ -8,7 +8,7 @@
 					@clickEvent="onContestCardClick(contestsAddressList[participateContestsIndex[index]])"></contest-card>	
 			</template>
 		</div>
-		<a-divider>发起的比赛🐶</a-divider>
+		<a-divider>发起的比赛🎉</a-divider>
 		<div class="item-group">
 			<template v-for="(contest,index) in sponsorContests">
 				<contest-card :key="contestsAddressList[sponsorContestsIndex[index]]" 
