@@ -130,7 +130,11 @@ contract Contest {
         }
         return false;
     }
-    
+
+    // 判断用户是否参与
+    function isSponsor() public view returns (bool){
+        return msg.sender == sponsor;
+    }
     
     // modifier 只允许已参与的用户访问
     modifier onlyAllowedParticipants{

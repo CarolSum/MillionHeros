@@ -2,21 +2,27 @@
   <div id="space">
 		<a-divider>已参与的比赛🚀</a-divider>
 		<div class="item-group">
-			<contest-card :contest="contest" @clickEvent="onContestCardClick"></contest-card>
-			<contest-card :contest="contest" @clickEvent="onContestCardClick"></contest-card>
-			<contest-card :contest="contest" @clickEvent="onContestCardClick"></contest-card>
+			<template v-for="(contest,index) in participateContests">
+				<contest-card :key="contestsAddressList[participateContestsIndex[index]]" 
+					:contest="contest"
+					@clickEvent="onContestCardClick(contestsAddressList[participateContestsIndex[index]])"></contest-card>	
+			</template>
 		</div>
 		<a-divider>发起的比赛🐶</a-divider>
 		<div class="item-group">
-			<contest-card :contest="contest" @clickEvent="onContestCardClick"></contest-card>
-			<contest-card :contest="contest" @clickEvent="onContestCardClick"></contest-card>
-			<contest-card :contest="contest" @clickEvent="onContestCardClick"></contest-card>
+			<template v-for="(contest,index) in sponsorContests">
+				<contest-card :key="contestsAddressList[sponsorContestsIndex[index]]" 
+					:contest="contest"
+					@clickEvent="onContestCardClick(contestsAddressList[sponsorContestsIndex[index]])"></contest-card>	
+			</template>
 		</div>
   </div>
 </template>
 
 <script>
 import { Divider } from 'ant-design-vue';
+import { baseInfoWrapper } from '../utils/ObjectWrapper';
+import { GET_CONTEST_ADDRESS } from '../store/actions';
 import ContestCard from './share/ContestCard';
 
 export default {
@@ -30,23 +36,64 @@ export default {
 	},
 	data: function () {
 		return {
-			contest: {
-				contestid: 222,
-				desc: '这是描述信息这是描述信息这是描述信息这是描述信息这是描述信息这是描述信息',
-				isFinished: false,
-				title: '孔Bob举办的第2场pk赛',
-				cost: 10,
-				bonus: 1000,
-				ddl: '2018-12-20/20:30',
-				sponsor: '0x12321312313'
-			}
+			participateContests: [],
+			participateContestsIndex: [],
+			sponsorContests: [],
+			sponsorContestsIndex: [],
 		}
 	},
   methods: {
     onContestCardClick(id) {
-			this.$router.push({ name:'contest', params: { contestId: "0xfbcb7022c011799b8a3bef3e5d04828c38341cf8" }});
+			this.$router.push({ name:'contest', params: { contestId: id }});
 		}
-  }
+	},
+	computed: {
+		contestsAddressList: function () {
+			return this.$store.state.contestAddress;
+		}
+	},
+	watch: {
+    contestsAddressList: function (newList, oldList) {
+			try {
+				let that = this;
+				// 查看用户是否已经参与这次比赛
+				this.$web3.eth.getAccounts(async (error, accounts) => {
+					if (error) {
+						console.log(error);
+					}
+					let account = accounts[0];
+					for (let index = 0; index < newList.length; index++) {
+						let instance = await that.$contracts.Contest.at(newList[index]);
+						// 获取用户参与的比赛
+						let isParticipator = await instance.isParticipant.call({from: account});
+						if (isParticipator) {
+							let info = await instance.getContestBaseInfo.call();
+							let res = baseInfoWrapper(info);
+							res.ddl = new Date(res.ddl);
+							console.log(res);
+							that.participateContestsIndex.push(index);
+							that.participateContests.push(res);
+						}
+						// 获取用户发起的比赛
+						let isSponsor = await instance.isSponsor.call({from: account});
+						if (isSponsor) {
+							let info = await instance.getContestBaseInfo.call();
+							let res = baseInfoWrapper(info);
+							res.ddl = new Date(res.ddl);
+							console.log(res);
+							that.sponsorContestsIndex.push(index);
+							that.sponsorContests.push(res);
+						}
+					}
+				});
+			} catch (error) {
+				console.log(error);
+			}
+		}
+  },
+	mounted () {
+		this.$store.dispatch(GET_CONTEST_ADDRESS);
+	}
 }
 </script>
 

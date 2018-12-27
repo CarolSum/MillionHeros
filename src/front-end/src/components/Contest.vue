@@ -174,7 +174,7 @@ export default {
 				}
 			});
 		} catch (error) {
-			console.log(err);
+			console.log(error);
 		}
 	}
 }

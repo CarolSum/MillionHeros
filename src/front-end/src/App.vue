@@ -5,13 +5,14 @@
 </template>
 
 <script>
-
+import { GET_CONTEST_ADDRESS } from './store/actions';
 export default {
   name: 'app',
   components: {
   },
   mounted () {
-    
+    this.$store.dispatch(GET_CONTEST_ADDRESS);
+    console.log('获取所有合约地址')
   }
 }
 </script>

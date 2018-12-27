@@ -27,16 +27,6 @@ export default {
 	},
 	data: function () {
 		return {
-			contest: {
-				contestid: 111,
-				desc: '这是描述信息这是描述信息这是描述信息这是描述信息这是描述信息这是描述信息',
-				isFinished: false,
-				title: '孔Bob举办的第一场pk赛',
-				cost: 10,
-				bonus: 1000,
-				ddl: '2018-12-20/20:30',
-				sponsor: '0x12321312313'
-			},
 			contests: [],
 			contestsIndex: [],
 		}
@@ -71,7 +61,6 @@ export default {
 		}
   },
 	mounted () {
-
 		// 获得用户地址
 		// var account = this.$web3.eth.accounts[0];
 		// this.$store.commit('SET_ACCOUNT', account);
