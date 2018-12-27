@@ -200,7 +200,7 @@ export default {
 
         contracts.Playground.deployed().then(function(instance) {
           console.log(instance);
-          return instance.addContest.sendTransaction(payload.title, payload.desc, payload.ddl, payload.cost, payload.bonus, payload.content, payload.answer, {from: account, value:2000});
+          return instance.addContest.sendTransaction(payload.title, payload.desc, payload.ddl, payload.cost, payload.bonus, payload.content, payload.answer, {from: account, value: 2000 + 100 + payload.bonus});
         }).then(function(txhash) {
           console.log(txhash);
           that.submitLoading = false;

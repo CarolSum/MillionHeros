@@ -48,6 +48,7 @@ contract TestPlayground {
     // test partcipate()
     function testPartcipate () public payable {
         contest.partcipate.value(50)();
+        Assert.equal(contest.isParticipant(), true, "成功参与比赛");
     }
 
     // test getContestBaseInfo()

@@ -44,7 +44,7 @@ export default {
 	},
   methods: {
     onContestCardClick(id) {
-			this.$router.push({ name:'contest', params: { contestId: 1 }});
+			this.$router.push({ name:'contest', params: { contestId: "0xfbcb7022c011799b8a3bef3e5d04828c38341cf8" }});
 		}
   }
 }

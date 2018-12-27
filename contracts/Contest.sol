@@ -113,6 +113,16 @@ contract Contest {
         }
         return false;
     }
+
+    // 判断用户是否参与
+    function isParticipant() public view returns (bool){
+        for(uint i = 0; i < participants.length; i++){
+            if(msg.sender == participants[i]) {
+                return true;
+            }
+        }
+        return false;
+    }
     
     
     // modifier 只允许已参与的用户访问

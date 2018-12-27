@@ -3,7 +3,6 @@ import App from './App.vue'
 import web3Plugin from './plugins/web3'
 import router from './router.js'
 import VueRouter from 'vue-router'
-
 import { store } from './store/index'
 
 Vue.use(VueRouter)

@@ -57,11 +57,13 @@
 import { 
 	Divider,
 	Button,
-	Popconfirm
+	Popconfirm,
+	Icon
 } from 'ant-design-vue';
 import IconText from './share/IconText';
 import ProblemCard from './share/ProblemCard';
 import { baseInfoWrapper } from '../utils/ObjectWrapper';
+import { notification } from 'ant-design-vue'
 
 export default {
   name: 'contest',
@@ -72,6 +74,7 @@ export default {
 		ADivider: Divider,
 		AButton: Button,
 		APopconfirm: Popconfirm,
+		AIcon: Icon,
 		IconText,
 		ProblemCard
 	},
@@ -95,7 +98,8 @@ export default {
 				winner: '0x12312312312312312312'
 			},
 			baseContestInfo: {},
-			isSubmitted: false
+			isSubmitted: false,
+			isParticipator: true
 		}
 	},
 	computed: {
@@ -105,9 +109,6 @@ export default {
 		resolveAnswer: function () {
 			return JSON.parse(this.baseContestInfo.answer);
 		},
-		isParticipator () {
-			return true;
-		}
 	},
   methods: {
 		jumpToAnswer () {
@@ -117,7 +118,31 @@ export default {
 			console.log('dispatch get info')
 		},
 		participate () {
+			if(!this.baseContestInfo) return;
 			// 参与该场比赛
+			try {
+				let that = this;
+				this.$web3.eth.getAccounts(async (error, accounts) => {
+					if (error) {
+						console.log(error);
+					}
+					let account = accounts[0];
+					console.log(account);
+					let instance = await that.$contracts.Contest.at(that.$route.params.contestId);
+					let info = await instance.partcipate.sendTransaction({from: account, value: 100 + that.baseContestInfo.cost}); 
+					console.log(info);
+					// 更新数据
+					that.isParticipator = true;
+					// 打开通知
+					notification.open({
+						message: '参与比赛成功',
+						description: '点击答题，开始愉快的答题环节吧～',
+						icon: <a-icon type="smile" style="color: #108ee9" />,
+					});
+				});
+			} catch (error) {
+				console.log(err);
+			}
 		}
 	},
 	async beforeMount () {
@@ -135,6 +160,16 @@ export default {
 			if (this.isSubmitted) {
 				// 获取提交记录
 			}
+
+			// 查看用户是否已经参与这次比赛
+			let that = this;
+			this.$web3.eth.getAccounts(async (error, accounts) => {
+				if (error) {
+					console.log(error);
+				}
+				let account = accounts[0];
+				that.isParticipator = await instance.isParticipant.call({from: account}); 
+			});
 		} catch (error) {
 			console.log(err);
 		}
