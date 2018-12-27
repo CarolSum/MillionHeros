@@ -91,6 +91,7 @@ import {
 } from 'ant-design-vue'
 import { setTimeout } from 'timers';
 import ContestInfoForm from './share/ContestInfoForm';
+const moment = require('moment');
 
 export default {
   name: 'sponsored',
@@ -120,8 +121,7 @@ export default {
         choice: [
           '太阳',
           '植物蒸腾',
-          '地球表面水体蒸发',
-          '大气本身'
+          '地球表面水体蒸发'
         ],
         answer: 2
       },{
@@ -130,8 +130,7 @@ export default {
         choice: [
           '南北纬300—400大陆东岸',
           '南北回归线附近',
-          '南北纬400—600大陆东岸',
-          '赤道附近'
+          '南北纬400—600大陆东岸'
         ],
         answer: 0
       }, {
@@ -139,11 +138,10 @@ export default {
         title: '我国庐山成为避暑胜地的主要因素是',
         choice: [
           '纬度因素',
-          '海陆因素',
           '洋流因素',
           '地形因素'
         ],
-        answer: 3
+        answer: 2
       }],
       columns: [{
         title: '序号',
@@ -179,28 +177,21 @@ export default {
     },
     // 提交发布
     handleSubmitSponsor (payload) {
+      let that = this;
       this.submitLoading = true;
       this.newContestData.forEach(item => {
         this.newContestAnswer[item.id] = item.answer;
       })
-      // 新contest的答案
-      console.log(JSON.stringify(this.newContestAnswer));
-      // 新contest的内容
-      console.log(JSON.stringify(this.newContestContent));
       // payload 中为contest的基本信息    
       payload.ddl = payload.ddl.valueOf();
+      payload.content = JSON.stringify(this.newContestContent).replace(/\"/g,"'");
+      payload.answer = JSON.stringify(this.newContestAnswer).replace(/\"/g,"'");
       console.log(payload);
 
-      setTimeout(() => {
-        this.submitLoading = false;
-      }, 1000);
       // 清空数据
-      // this.newContestContent.splice(0);
       this.newContestAnswer = {};
-      console.log('发布！');
 
       let contracts = this.$contracts;
-
       this.$web3.eth.getAccounts(function(error, accounts) {
         if (error) {
           console.log(error);
@@ -209,11 +200,15 @@ export default {
 
         contracts.Playground.deployed().then(function(instance) {
           console.log(instance);
-          return instance.addContest.sendTransaction("Title1", "This is a description", 30, 20, 1000, "[{title:'这是一道题目', choice: ['aaa', 'bbb', 'ccc']}]","{'0':'1'}", {from: account, value:2000});
+          return instance.addContest.sendTransaction(payload.title, payload.desc, payload.ddl, payload.cost, payload.bonus, payload.content, payload.answer, {from: account, value:2000});
         }).then(function(txhash) {
           console.log(txhash);
+          that.submitLoading = false;
+          that.$refs.contestForm.handleCancelSubmit();
         }).catch(function(err) {
           console.log(err);
+          that.submitLoading = false;
+          that.$refs.contestForm.handleCancelSubmit();
         });
       });
     },

@@ -27,7 +27,7 @@ contract TestPlayground {
     function testAddContest() public payable {
         // "Title1", "This is a description", 30, 20, 1000, "[{title:'这是一道题目', choice: ['aaa', 'bbb', 'ccc']}]","{'0':'1'}"
         testContestAddress = playground.addContest.value(2000)
-            ("Title1", "This is a description", 30, 20, 1000, "[{title:'这是一道题目', choice: ['aaa', 'bbb', 'ccc']}]","{'0':'1'}");
+            ("Title1", "This is a description", 1545918601003, 20, 1000, "[{title:'这是一道题目', choice: ['aaa', 'bbb', 'ccc']}]","{'0':'1'}");
         contest = Contest(testContestAddress);
         Assert.equal(playground.getContests().length, 1, "部署一个智能合约之后长度为1");
         Assert.equal(playground.getContests()[0], testContestAddress, "第一个Contest合约的地址需放入数组中");
@@ -36,9 +36,9 @@ contract TestPlayground {
     // Test getSponsorredContestsNum()
     function testGetSponsorredContestsNum() public payable {
         playground.addContest.value(2000)
-            ("Title1", "This is a description", 30, 20, 1000, "[{title:'这是一道题目', choice: ['aaa', 'bbb', 'ccc']}]","{'0':'1'}");
+            ("Title1", "This is a description", 1545918601003, 20, 1000, "[{title:'这是一道题目', choice: ['aaa', 'bbb', 'ccc']}]","{'0':'1'}");
         playground.addContest.value(2000)
-            ("Title2", "This is a description", 30, 20, 1000, "[{title:'这是一道题目', choice: ['aaa', 'bbb', 'ccc']}]","{'0':'1'}");
+            ("Title2", "This is a description", 1545918601003, 20, 1000, "[{title:'这是一道题目', choice: ['aaa', 'bbb', 'ccc']}]","{'0':'1'}");
         uint num = playground.getSponsorredContestsNum();
         Assert.equal(num, 3, "继续发起两个比赛后查看自己发起的比赛数量，值应为3");
     }

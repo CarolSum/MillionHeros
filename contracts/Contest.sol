@@ -40,7 +40,7 @@ contract Contest {
         isFinished = false;
         desc = mDesc;
         sponsor = msg.sender;
-        ddl = now + mDDL * 1 minutes;
+        ddl = mDDL;
         cost = mCost;
         bonus = mBonus;
         content = mContent;

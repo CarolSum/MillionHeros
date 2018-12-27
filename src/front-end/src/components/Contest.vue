@@ -1,7 +1,7 @@
 <template>
   <div id="contest-page">
 		<div class="contest-header">
-			<h1>{{contest.title}}</h1>
+			<h1>{{baseContestInfo.title}}</h1>
 			<div class="button-group">
 				<a-popconfirm v-if="!isParticipator" placement="left" title="参与比赛需要支付一定的金额，确定参与？" okText="Yes" cancelText="No" @confirm="participate">
 					<a-button style="color: white; background: chocolate;" class="positive-btn">参与</a-button>
@@ -14,18 +14,18 @@
 		<!-- <a-divider orientation="left">统计信息</a-divider> -->
 		<div class="base-info">
 			<div class="major-info">
-				<p>{{contest.desc}}</p>
-				<div class="secondary-text">发起人：{{contest.sponsor}}</div>
+				<p>{{baseContestInfo.desc}}</p>
+				<div class="secondary-text">发起人：{{baseContestInfo.sponsor}}</div>
 			</div>
 			<div class="text-info">
-				<icon-text iconType="plus-circle" hint="参与费用" :text="contest.cost"></icon-text>
-				<icon-text iconType="money-collect" hint="奖励金" :text="contest.bonus"></icon-text>
-				<icon-text iconType="clock-circle" hint="截止时间" :text="contest.ddl"></icon-text>
-				<icon-text iconType="thunderbolt" hint="是否结束" :text="contest.isFinished"></icon-text>
+				<icon-text iconType="plus-circle" hint="参与费用" :text="baseContestInfo.cost"></icon-text>
+				<icon-text iconType="money-collect" hint="奖励金" :text="baseContestInfo.bonus"></icon-text>
+				<icon-text iconType="clock-circle" hint="截止时间" :text="(baseContestInfo.ddl && baseContestInfo.ddl.toLocaleString()) || '' "></icon-text>
+				<icon-text iconType="thunderbolt" hint="是否结束" :text="baseContestInfo.isFinished"></icon-text>
 			</div>
 		</div>
 		<a-divider orientation="left">解答</a-divider>
-		<div v-if="contest.isFinished">
+		<div v-if="baseContestInfo.isFinished">
 			<template v-for="question in resolveContent" >
 				<problem-card :key="question.id" class="question-item"
 					:question="question"
@@ -61,6 +61,7 @@ import {
 } from 'ant-design-vue';
 import IconText from './share/IconText';
 import ProblemCard from './share/ProblemCard';
+import { baseInfoWrapper } from '../utils/ObjectWrapper';
 
 export default {
   name: 'contest',
@@ -93,15 +94,16 @@ export default {
 				// 赢家
 				winner: '0x12312312312312312312'
 			},
+			baseContestInfo: {},
 			isSubmitted: false
 		}
 	},
 	computed: {
 		resolveContent: function () {
-			return JSON.parse(this.contest.content);
+			return JSON.parse(this.baseContestInfo.content);
 		},
 		resolveAnswer: function () {
-			return JSON.parse(this.contest.answer);
+			return JSON.parse(this.baseContestInfo.answer);
 		},
 		isParticipator () {
 			return true;
@@ -118,15 +120,24 @@ export default {
 			// 参与该场比赛
 		}
 	},
-	mounted () {
-		this.$contracts.Contest.at("0xc28ee12c778db4067c3c91dc6bd69607514c4fcc").then(function(instance){
-			console.log(instance);
-			return instance.getContestBaseInfo.call();
-		}).then(function(balance){
-				console.log(balance);
-		}).catch(function(err){
-				console.log(err);
-		});
+	async beforeMount () {
+		try {
+			let instance = await this.$contracts.Contest.at(this.$route.params.contestId);
+			let info = await instance.getContestBaseInfo.call(); 
+			console.log(info);
+			let res = baseInfoWrapper(info);
+			console.log(res);
+			res.ddl = new Date(res.ddl);
+			this.baseContestInfo = res;
+			if(res.isFinished) {
+				// 获取题目详细信息
+			}
+			if (this.isSubmitted) {
+				// 获取提交记录
+			}
+		} catch (error) {
+			console.log(err);
+		}
 	}
 }
 </script>

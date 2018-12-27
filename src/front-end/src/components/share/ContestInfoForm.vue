@@ -84,7 +84,7 @@ export default {
 					this.$emit('submit', values);
 				}
       })
-    },
+		},
     openContestInfoModal () {
       this.contestInfoModalVisible = true;
     },

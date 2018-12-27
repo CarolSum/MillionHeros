@@ -3,7 +3,7 @@
 		<a-divider orientation="left">当前活跃的比赛🔥</a-divider>
 		<div class="item-group">
 			<template v-for="(contest,index) in contests">
-				<contest-card :key="contestsAddressList[index]" :contest="contest" @clickEvent="onContestCardClick(contestsAddressList[index])"></contest-card>	
+				<contest-card :key="contestsAddressList[index]" :contest="contest" @clickEvent="onContestCardClick(contestsAddressList[contestsIndex[index]])"></contest-card>	
 			</template>
 		</div>
   </div>
@@ -37,7 +37,8 @@ export default {
 				ddl: '2018-12-20/20:30',
 				sponsor: '0x12321312313'
 			},
-			contests: []
+			contests: [],
+			contestsIndex: [],
 		}
 	},
   methods: {
@@ -53,13 +54,15 @@ export default {
 	watch: {
     contestsAddressList: function (newList, oldList) {
 			let contests = this.contests;
+			let contestsIndex = this.contestsIndex;
 			for (let index = 0; index < newList.length; index++) {
 				this.$contracts.Contest.at(newList[index]).then(function(instance){
 					return instance.getContestBaseInfo.call();
 				}).then(function(info){
 					let res = baseInfoWrapper(info);
-					res.ddl = new Date(res.ddl * 1000);
+					res.ddl = new Date(res.ddl);
 					console.log(res);
+					contestsIndex.push(index);
 					contests.push(res);
 				}).catch(function(err){
 					console.log(err);
