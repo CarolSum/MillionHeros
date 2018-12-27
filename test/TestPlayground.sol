@@ -55,4 +55,9 @@ contract TestPlayground {
     function testGetContestBaseInfo() public {
         Assert.equal(contest.getContestContent(), "[{title:'这是一道题目', choice: ['aaa', 'bbb', 'ccc']}]", "部署Contest的内容应一致");
     }
+
+    function testSubmit() public {
+        contest.submit("this is answer");
+        Assert.equal(contest.getUserSubmisstions(), "this is answer", "获取提交结果应一致");
+    }
 }

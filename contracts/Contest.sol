@@ -104,6 +104,13 @@ contract Contest {
         return (title, isFinished, desc, sponsor, ddl, cost, bonus, content, answer, winner);
     }
 
+    // 获取用户的提交
+    function getUserSubmisstions() public onlyAllowedParticipants view returns(string, bool){
+        // submisstions
+        Submit storage temp = submisstions[msg.sender];
+        return (temp.content, temp.isSubmitted);
+    }
+
     // 判断用户是否在某个用户组里
     function isParticipant(address user, address[] users) private pure returns (bool){
         for(uint i = 0; i < users.length; i++){

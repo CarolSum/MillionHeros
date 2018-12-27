@@ -26,10 +26,10 @@
 		</div>
 		<a-divider orientation="left">解答</a-divider>
 		<div v-if="baseContestInfo.isFinished">
-			<template v-for="question in resolveContent" >
+			<template v-for="question in content" >
 				<problem-card :key="question.id" class="question-item"
 					:question="question"
-					:answer="resolveAnswer[question.id]"
+					:answer="standard_answer[question.id]"
 					:type="0">
 				</problem-card>
 			</template>
@@ -39,10 +39,10 @@
 		</div>
 		<a-divider orientation="left">提交记录</a-divider>
 		<div v-if="isSubmitted">
-			<template v-for="question in resolveContent" >
+			<template v-for="question in content" >
 				<problem-card :key="question.id" class="question-item"
 					:question="question"
-					:answer="resolveAnswer[question.id]"
+					:answer="user_submit[question.id]"
 					:type="1">
 				</problem-card>
 			</template>
@@ -99,6 +99,10 @@ export default {
 				winner: '0x12312312312312312312'
 			},
 			baseContestInfo: {},
+			getContestAllInfo: {},
+			user_submit: {},
+			standard_answer: {},
+			content: [],
 			isSubmitted: false,
 			isParticipator: true
 		}
@@ -159,9 +163,9 @@ export default {
 
 			if(res.isFinished) {
 				// 获取题目详细信息
-			}
-			if (this.isSubmitted) {
-				// 获取提交记录
+				let allInfo = await instance.getContestAllInfo.call(); 
+				console.log(allInfo);
+				// let res = allInfoWrapper(info);
 			}
 
 			// 查看用户是否已经参与这次比赛
@@ -172,6 +176,20 @@ export default {
 				}
 				let account = accounts[0];
 				that.isParticipator = await instance.isParticipant.call({from: account}); 
+				if (that.isParticipator) {
+					// 获取比赛的题目并完成解析
+					let info = await instance.getContestContent.call({from: account}); 
+					that.content = JSON.parse(info.replace(/\'/g,"\""));
+
+					// 判断用户是否已经提及，如果是则获取提交记录
+					let submit_state = await instance.getUserSubmisstions.call({from: account});
+					let answer = submit_state[0];
+					let isSubmitted = submit_state[1];
+					if(isSubmitted) {
+						that.user_submit = JSON.parse(answer.replace(/\'/g,"\""));
+					}
+					that.isSubmitted = isSubmitted;
+				}
 			});
 		} catch (error) {
 			console.log(err);
